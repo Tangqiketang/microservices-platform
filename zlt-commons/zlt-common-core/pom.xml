@@ -4,20 +4,15 @@
     <parent>
         <groupId>com.zlt</groupId>
         <artifactId>zlt-commons</artifactId>
-        <version>5.2.0</version>
+        <version>5.6.0</version>
     </parent>
     <artifactId>zlt-common-core</artifactId>
     <description>公共通用组件</description>
     <packaging>jar</packaging>
     <dependencies>
         <dependency>
-            <groupId>com.zlt</groupId>
-            <artifactId>zlt-log-spring-boot-starter</artifactId>
-        </dependency>
-        <dependency>
             <groupId>com.baomidou</groupId>
-            <artifactId>mybatis-plus</artifactId>
-            <optional>true</optional>
+            <artifactId>mybatis-plus-extension</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.social</groupId>
@@ -89,6 +84,19 @@
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>transmittable-thread-local</artifactId>
         </dependency>
     </dependencies>
 </project>

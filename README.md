@@ -1,11 +1,12 @@
 #  zlt-microservices-platform
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Version-5.2.0-critical" alt="Downloads"/>
-  <img src="https://img.shields.io/badge/Spring%20Boot-2.5.7-blue" alt="Downloads"/>
-  <img src="https://img.shields.io/badge/Spring%20Cloud-2020.0.4-blue" alt="Downloads"/>
+  <img src="https://img.shields.io/badge/Version-5.5.0-critical" alt="Downloads"/>
+  <img src="https://img.shields.io/badge/Spring%20Boot-2.5.14-blue" alt="Downloads"/>
+  <img src="https://img.shields.io/badge/Spring%20Cloud-2020.0.6-blue" alt="Downloads"/>
   <img src="https://img.shields.io/badge/Spring%20Cloud%20Alibaba-2021.1-blue" alt="Downloads"/>
   <img src="https://img.shields.io/badge/Elasticsearch-7.x-brightgreen" alt="Downloads"/>
+  <img src="https://img.shields.io/badge/Ant%20Design-pro-9cf" alt="Downloads"/>
   <a target="_blank" href='https://gitee.com/zlt2000/microservices-platform'>
     <img src='https://gitee.com/zlt2000/microservices-platform/badge/star.svg' alt='star'/>
   </a>
@@ -13,6 +14,7 @@
     <img src="https://img.shields.io/github/stars/zlt2000/microservices-platform.svg?style=social" alt="github star"/>
   </a>
 </p>
+
 
 
 
@@ -87,19 +89,14 @@ central-platform -- 父项目，公共依赖
 │  ├─zlt-doc -- 项目文档
 │  ├─zlt-gateway -- api网关一级工程
 │  │  ├─sc-gateway -- spring-cloud-gateway[9900]
-│  ├─zlt-job -- 分布式任务调度一级工程
-│  │  ├─job-admin -- 任务管理器[8081]
-│  │  ├─job-core -- 任务调度核心代码
-│  │  ├─job-executor-samples -- 任务执行者executor样例[8082]
 │  ├─zlt-monitor -- 监控一级工程
 │  │  ├─sc-admin -- 应用监控[6500]
 │  │  ├─log-center -- 日志中心[7200]
 │  ├─zlt-uaa -- spring-security认证中心[8000]
 │  ├─zlt-register -- 注册中心Nacos[8848]
 │  ├─zlt-web -- 前端一级工程
-│  │  ├─back-web -- 后台前端[8066]
-│  ├─zlt-transaction -- 事务一级工程
-│  │  ├─txlcn-tm -- tx-lcn事务管理器[7970]
+│  │  ├─layui-web -- layui前端[8066]
+│  │  ├─react-web -- react前端[8066]
 │  ├─zlt-demo -- demo一级工程
 │  │  ├─txlcn-demo -- txlcn分布式事务demo
 │  │  ├─seata-demo -- seata分布式事务demo

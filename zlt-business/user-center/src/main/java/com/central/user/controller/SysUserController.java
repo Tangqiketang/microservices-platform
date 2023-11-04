@@ -7,11 +7,11 @@ import java.util.Map;
 import java.util.Set;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.util.ObjectUtil;
 import com.central.common.annotation.LoginUser;
 import com.central.common.constant.CommonConstant;
 import com.central.common.model.*;
 import com.central.common.utils.ExcelUtil;
-//import com.central.log.annotation.AuditLog;
 import com.central.log.annotation.AuditLog;
 import com.central.search.client.service.IQueryService;
 import com.central.search.model.LogicDelDto;
@@ -284,6 +284,23 @@ public class SysUserController {
         searchDto.setIsHighlighter(true);
         searchDto.setSortCol("createTime");
         return queryService.strQuery("sys_user", searchDto, SEARCH_LOGIC_DEL_DTO);
+    }
+
+    /**
+     * 获取用户并返回角色列表
+     * @param username
+     * @return
+     */
+    @GetMapping(value = "/users/roleUser/{username}")
+    @ApiOperation(value = "查询用户-带角色信息")
+    @Cacheable(value = "userRoles", key = "#username")
+    public SysUser selectRoleUser(@PathVariable("username") String username){
+        SysUser sysUser = selectByUsername(username);
+        if(ObjectUtil.isNotNull(sysUser)){
+            List<SysRole> roleList = findRolesByUserId(sysUser.getId());
+            sysUser.setRoles(roleList);
+        }
+        return sysUser;
     }
 
     /**

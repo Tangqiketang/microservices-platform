@@ -1,12 +1,17 @@
 package com.central.db.config;
 
-import cn.hutool.core.collection.CollUtil;
+import com.baomidou.mybatisplus.annotation.DbType;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
-import com.baomidou.mybatisplus.core.parser.ISqlParserFilter;
-import com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor;
-import com.baomidou.mybatisplus.extension.plugins.tenant.TenantHandler;
-import com.baomidou.mybatisplus.extension.plugins.tenant.TenantSqlParser;
+import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
+import com.baomidou.mybatisplus.extension.plugins.handler.TenantLineHandler;
+import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
+import com.central.common.datascope.mp.interceptor.DataScopeInnerInterceptor;
+import com.central.common.datascope.mp.interceptor.EnableQuerySqlLogInnerInterceptor;
+import com.central.common.datascope.mp.sql.handler.CreatorDataScopeSqlHandler;
+import com.central.common.datascope.mp.sql.handler.SqlHandler;
+import com.central.common.properties.DataScopeProperties;
 import com.central.common.properties.TenantProperties;
+import com.central.db.interceptor.CustomTenantInterceptor;
 import com.central.db.properties.MybatisPlusAutoFillProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -23,13 +28,10 @@ import org.springframework.context.annotation.Bean;
  * Blog: https://zlt2000.gitee.io
  * Github: https://github.com/zlt2000
  */
-@EnableConfigurationProperties(MybatisPlusAutoFillProperties.class)
+@EnableConfigurationProperties({MybatisPlusAutoFillProperties.class, DataScopeProperties.class})
 public class MybatisPlusAutoConfigure {
     @Autowired
-    private TenantHandler tenantHandler;
-
-    @Autowired
-    private ISqlParserFilter sqlParserFilter;
+    private TenantLineHandler tenantLineHandler;
 
     @Autowired
     private TenantProperties tenantProperties;
@@ -37,21 +39,35 @@ public class MybatisPlusAutoConfigure {
     @Autowired
     private MybatisPlusAutoFillProperties autoFillProperties;
 
+    @Autowired
+    private DataScopeProperties dataScopeProperties;
+
+    @Bean
+    @ConditionalOnMissingBean
+    public SqlHandler sqlHandler(){
+        return new CreatorDataScopeSqlHandler();
+    }
+
     /**
      * 分页插件，自动识别数据库类型
      */
     @Bean
-    public PaginationInterceptor paginationInterceptor() {
-        PaginationInterceptor paginationInterceptor = new PaginationInterceptor();
+    public MybatisPlusInterceptor paginationInterceptor(SqlHandler sqlHandler) {
+        MybatisPlusInterceptor mpInterceptor = new MybatisPlusInterceptor();
         boolean enableTenant = tenantProperties.getEnable();
         //是否开启多租户隔离
         if (enableTenant) {
-            TenantSqlParser tenantSqlParser = new TenantSqlParser()
-                    .setTenantHandler(tenantHandler);
-            paginationInterceptor.setSqlParserList(CollUtil.toList(tenantSqlParser));
-            paginationInterceptor.setSqlParserFilter(sqlParserFilter);
+            CustomTenantInterceptor tenantInterceptor = new CustomTenantInterceptor(
+                    tenantLineHandler, tenantProperties.getIgnoreSqls());
+            mpInterceptor.addInnerInterceptor(tenantInterceptor);
         }
-        return paginationInterceptor;
+        if(dataScopeProperties.getEnabled()){
+            DataScopeInnerInterceptor dataScopeInnerInterceptor = new DataScopeInnerInterceptor(dataScopeProperties, sqlHandler);
+            mpInterceptor.addInnerInterceptor(Boolean.TRUE.equals(dataScopeProperties.getEnabledSqlDebug())
+                    ? new EnableQuerySqlLogInnerInterceptor(dataScopeInnerInterceptor): dataScopeInnerInterceptor);
+        }
+        mpInterceptor.addInnerInterceptor(new PaginationInnerInterceptor(DbType.MYSQL));
+        return mpInterceptor;
     }
 
     @Bean
